@@ -1,30 +1,32 @@
 from PIL import Image
 
 def encrypt_image(input_path, output_path, key):
-    # Open the image
-    img = Image.open(input_path)
-    pixels = img.load()
+    try:
+        img = Image.open(input_path)
+        pixels = img.load()
 
-    # Encrypt the image using modular addition
-    width, height = img.size
-    for i in range(width):
-        for j in range(height):
-            r, g, b = pixels[i, j]
+        width, height = img.size
+        for i in range(width):
+            for j in range(height):
+                r, g, b = pixels[i, j]
+                encrypted_r = (r + key) % 256
+                encrypted_g = (g + key) % 256
+                encrypted_b = (b + key) % 256
+                pixels[i, j] = (encrypted_r, encrypted_g, encrypted_b)
 
-            # Example: Encrypt each pixel value using modular addition
-            encrypted_r = (r + key) % 256
-            encrypted_g = (g + key) % 256
-            encrypted_b = (b + key) % 256
+        img.save(output_path)
+        print(f"✅ Image encrypted and saved to {output_path}")
+    except FileNotFoundError:
+        print("❌ Input image not found.")
+    except Exception as e:
+        print(f"⚠️ Error: {e}")
 
-            # Update the pixel value
-            pixels[i, j] = (encrypted_r, encrypted_g, encrypted_b)
+def main():
+    input_path = "samples/mnli2.png"
+    output_path = "samples/encrypted_image.png"
+    key = 50
+    encrypt_image(input_path, output_path, key)
 
-    # Save the encrypted image
-    img.save(output_path)
+if __name__ == "__main__":
+    main()
 
-# Example usage
-input_image_path = "C:\\Users\\Aryan patil\\OneDrive\\Desktop\\PRODIGY_CS\\TASK3\\mnli2.png"
-output_image_path = "C:\\Users\\Aryan patil\\OneDrive\\Desktop\\PRODIGY_CS\\TASK3\\encrypted_image.png"
-encryption_key = 50
-
-encrypt_image(input_image_path, output_image_path, encryption_key)
